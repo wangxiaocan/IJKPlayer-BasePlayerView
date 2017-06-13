@@ -1,0 +1,2 @@
+# BasePlayerView
+use IJKPlayer
