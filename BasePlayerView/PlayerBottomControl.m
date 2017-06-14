@@ -29,7 +29,7 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
         
         _playImage = [[UIImageView alloc] init];
         _playImage.image = [UIImage imageNamed:@"player_play"];
