@@ -10,6 +10,7 @@
 #define B_D_HEIGHT  [UIScreen mainScreen].bounds.size.height
 
 #import "BasePlayerView.h"
+#import "PlayerBottomControl.h"
 #import "Masonry.h"
 
 
@@ -22,6 +23,9 @@
 @property(nonatomic, assign, readwrite) BOOL lastPlayStatus; /**< YES：play，NO：pause */
 
 @property(nonatomic, strong) UIProgressView *playProgress;
+@property(nonatomic, strong) UIActivityIndicatorView *loadView;
+
+@property(nonatomic, strong) PlayerBottomControl    *bottomControl;
 
 @end
 
@@ -51,15 +55,47 @@
             make.height.mas_equalTo(2.0);
         }];
         _playProgress.progress = 0.f;
+        
+        _bottomControl = [[PlayerBottomControl alloc]init];
+        [self addSubview:_bottomControl];
+        [_bottomControl mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.mas_left);
+            make.right.equalTo(self.mas_right);
+            make.bottom.equalTo(self.mas_bottom);
+            make.height.equalTo(self.mas_height).with.multipliedBy(0.2);
+        }];
+        
+        _loadView = [[UIActivityIndicatorView alloc]init];
+        _loadView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+        _loadView.hidesWhenStopped = YES;
+        [self addSubview:_loadView];
+        [_loadView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.mas_top);
+            make.left.equalTo(self.mas_left);
+            make.right.equalTo(self.mas_right);
+            make.bottom.equalTo(self.mas_bottom);
+        }];
+        
+        
         [self refreshPlayTime];
         [self installMovieNotificationObservers];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        
+        
+        UITapGestureRecognizer *tapOnce = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapOnceGesture:)];
+        UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(doubleTapGesture:)];
+        doubleTap.numberOfTapsRequired = 2;
+        [self addGestureRecognizer:tapOnce];
+        [self addGestureRecognizer:doubleTap];
+        [tapOnce requireGestureRecognizerToFail:doubleTap];
+        
     }
     return self;
 }
 
 + (void)playWithUrl:(NSURL *)playUrl withHeaderInfos:(NSDictionary *)headerInfo{
+    [[BasePlayerView shareInstance].loadView startAnimating];
     [BasePlayerView shareInstance].lastPlayStatus = NO;
     [BasePlayerView shareInstance].url = playUrl;
     if ([BasePlayerView shareInstance].player) {
@@ -123,10 +159,33 @@
     [[BasePlayerView shareInstance].player shutdown];
 }
 
++ (void)changePlayStatus{
+    if ([BasePlayerView shareInstance].isPlaying) {
+        [BasePlayerView pause];
+    }else{
+        [BasePlayerView play];
+    }
+}
+
 + (void)setCurrentPlayBackTime:(double)playTime{
     [BasePlayerView shareInstance].player.currentPlaybackTime = playTime;
 }
 
+
+
+#pragma mark-
+#pragma mark- 播放器手势
+- (void)tapOnceGesture:(UITapGestureRecognizer *)gesture{
+    NSLog(@"tap once");
+}
+
+- (void)doubleTapGesture:(UITapGestureRecognizer *)gesture{
+    if (self.isPlaying) {
+        [self.player pause];
+    }else{
+        [self.player play];
+    }
+}
 
 
 #pragma mark- 
@@ -142,8 +201,10 @@
     
     if ((loadState & IJKMPMovieLoadStatePlaythroughOK) != 0) {//加载完成
         NSLog(@"loadStateDidChange: IJKMPMovieLoadStatePlaythroughOK: %d\n", (int)loadState);
+        [_loadView stopAnimating];
     } else if ((loadState & IJKMPMovieLoadStateStalled) != 0) {//加载停滞
         NSLog(@"loadStateDidChange: IJKMPMovieLoadStateStalled: %d\n", (int)loadState);
+        [_loadView startAnimating];
     } else {
         NSLog(@"loadStateDidChange: ???: %d\n", (int)loadState);
     }
@@ -249,12 +310,16 @@
 #pragma mark-
 #pragma mark- 刷新播放进度
 - (void)refreshPlayTime{
+    CGFloat currentProgress = 0.f;
     if (_player.currentPlaybackTime == 0 && _player.duration == 0) {
-        _playProgress.progress = 0.f;
+        currentProgress = 0.f;
     }else{
-       _playProgress.progress = _player.currentPlaybackTime / _player.duration;
+       currentProgress = _player.currentPlaybackTime / _player.duration;
     }
-    
+    _playProgress.progress = currentProgress;
+    [_bottomControl setPlayProgress:currentProgress];
+    [_bottomControl setPlayStatus:self.isPlaying];
+    [_bottomControl setCurrentPlayTime:_player.currentPlaybackTime andDuration:_player.duration];
     NSLog(@"current play time:%f and total time:%f",_player.currentPlaybackTime,_player.duration);
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshPlayTime) object:nil];
     [self performSelector:@selector(refreshPlayTime) withObject:nil afterDelay:0.5];

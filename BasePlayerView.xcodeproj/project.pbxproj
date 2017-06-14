@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7294D7A61EF0D66000497C21 /* PlayerBottomControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 7294D7A51EF0D66000497C21 /* PlayerBottomControl.m */; };
+		7294D7B01EF0EE7300497C21 /* touch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7294D7AC1EF0EE7300497C21 /* touch@2x.png */; };
+		7294D7B11EF0EE7300497C21 /* touch@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7294D7AD1EF0EE7300497C21 /* touch@1x.png */; };
+		7294D7B21EF0EE7300497C21 /* player_pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 7294D7AE1EF0EE7300497C21 /* player_pause.png */; };
+		7294D7B31EF0EE7300497C21 /* player_play.png in Resources */ = {isa = PBXBuildFile; fileRef = 7294D7AF1EF0EE7300497C21 /* player_play.png */; };
 		729A87EE1EEF8B9F00CBC842 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 729A87ED1EEF8B9F00CBC842 /* main.m */; };
 		729A87F11EEF8B9F00CBC842 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 729A87F01EEF8B9F00CBC842 /* AppDelegate.m */; };
 		729A87F41EEF8B9F00CBC842 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 729A87F31EEF8B9F00CBC842 /* ViewController.m */; };
@@ -61,6 +66,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7294D7A41EF0D66000497C21 /* PlayerBottomControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerBottomControl.h; sourceTree = "<group>"; };
+		7294D7A51EF0D66000497C21 /* PlayerBottomControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerBottomControl.m; sourceTree = "<group>"; };
+		7294D7AC1EF0EE7300497C21 /* touch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "touch@2x.png"; sourceTree = "<group>"; };
+		7294D7AD1EF0EE7300497C21 /* touch@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "touch@1x.png"; sourceTree = "<group>"; };
+		7294D7AE1EF0EE7300497C21 /* player_pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = player_pause.png; sourceTree = "<group>"; };
+		7294D7AF1EF0EE7300497C21 /* player_play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = player_play.png; sourceTree = "<group>"; };
 		729A87E91EEF8B9F00CBC842 /* BasePlayerView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BasePlayerView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		729A87ED1EEF8B9F00CBC842 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		729A87EF1EEF8B9F00CBC842 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -161,6 +172,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7294D7A21EF0D5C300497C21 /* PlayerView */ = {
+			isa = PBXGroup;
+			children = (
+				729A883C1EEF8CA400CBC842 /* BasePlayerView.h */,
+				729A883D1EEF8CA400CBC842 /* BasePlayerView.m */,
+				7294D7A41EF0D66000497C21 /* PlayerBottomControl.h */,
+				7294D7A51EF0D66000497C21 /* PlayerBottomControl.m */,
+			);
+			name = PlayerView;
+			sourceTree = "<group>";
+		};
+		7294D7A31EF0D5E300497C21 /* OtherSource */ = {
+			isa = PBXGroup;
+			children = (
+				729A88401EEF972100CBC842 /* Masonry */,
+			);
+			name = OtherSource;
+			sourceTree = "<group>";
+		};
+		7294D7AB1EF0EE4D00497C21 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				7294D7AC1EF0EE7300497C21 /* touch@2x.png */,
+				7294D7AD1EF0EE7300497C21 /* touch@1x.png */,
+				7294D7AE1EF0EE7300497C21 /* player_pause.png */,
+				7294D7AF1EF0EE7300497C21 /* player_play.png */,
+			);
+			name = Resource;
+			sourceTree = "<group>";
+		};
 		729A87E01EEF8B9F00CBC842 = {
 			isa = PBXGroup;
 			children = (
@@ -185,7 +226,9 @@
 		729A87EB1EEF8B9F00CBC842 /* BasePlayerView */ = {
 			isa = PBXGroup;
 			children = (
-				729A88401EEF972100CBC842 /* Masonry */,
+				7294D7AB1EF0EE4D00497C21 /* Resource */,
+				7294D7A31EF0D5E300497C21 /* OtherSource */,
+				7294D7A21EF0D5C300497C21 /* PlayerView */,
 				729A87EF1EEF8B9F00CBC842 /* AppDelegate.h */,
 				729A87F01EEF8B9F00CBC842 /* AppDelegate.m */,
 				729A87F21EEF8B9F00CBC842 /* ViewController.h */,
@@ -195,8 +238,6 @@
 				729A87FA1EEF8B9F00CBC842 /* LaunchScreen.storyboard */,
 				729A87FD1EEF8B9F00CBC842 /* Info.plist */,
 				729A87EC1EEF8B9F00CBC842 /* Supporting Files */,
-				729A883C1EEF8CA400CBC842 /* BasePlayerView.h */,
-				729A883D1EEF8CA400CBC842 /* BasePlayerView.m */,
 			);
 			path = BasePlayerView;
 			sourceTree = "<group>";
@@ -388,9 +429,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7294D7B01EF0EE7300497C21 /* touch@2x.png in Resources */,
+				7294D7B11EF0EE7300497C21 /* touch@1x.png in Resources */,
 				729A87FC1EEF8B9F00CBC842 /* LaunchScreen.storyboard in Resources */,
 				729A87F91EEF8B9F00CBC842 /* Assets.xcassets in Resources */,
 				729A87F71EEF8B9F00CBC842 /* Main.storyboard in Resources */,
+				7294D7B31EF0EE7300497C21 /* player_play.png in Resources */,
+				7294D7B21EF0EE7300497C21 /* player_pause.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +463,7 @@
 				729A885C1EEF972100CBC842 /* MASConstraintMaker.m in Sources */,
 				729A87F41EEF8B9F00CBC842 /* ViewController.m in Sources */,
 				729A87F11EEF8B9F00CBC842 /* AppDelegate.m in Sources */,
+				7294D7A61EF0D66000497C21 /* PlayerBottomControl.m in Sources */,
 				729A885B1EEF972100CBC842 /* MASConstraint.m in Sources */,
 				729A88631EEF972100CBC842 /* ViewController+MASAdditions.m in Sources */,
 				729A885D1EEF972100CBC842 /* MASLayoutConstraint.m in Sources */,
@@ -674,6 +720,7 @@
 				729A88181EEF8B9F00CBC842 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		729A88191EEF8B9F00CBC842 /* Build configuration list for PBXNativeTarget "BasePlayerViewTests" */ = {
 			isa = XCConfigurationList;
@@ -682,6 +729,7 @@
 				729A881B1EEF8B9F00CBC842 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		729A881C1EEF8B9F00CBC842 /* Build configuration list for PBXNativeTarget "BasePlayerViewUITests" */ = {
 			isa = XCConfigurationList;
@@ -690,6 +738,7 @@
 				729A881E1EEF8B9F00CBC842 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

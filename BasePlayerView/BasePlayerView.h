@@ -26,6 +26,9 @@
 
 + (void)shutDown;
 
+/** 播放状态互切 */
++ (void)changePlayStatus;
+
 //set player seeking time
 + (void)setCurrentPlayBackTime:(double)playTime;
 
