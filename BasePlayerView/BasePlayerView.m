@@ -81,6 +81,8 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
     self = [super initWithFrame:frame];
     if (self) {
         
+        self.clipsToBounds = YES;
+        
         _isActivity = YES;
         
         _touchType = TouhGestureType_None;
@@ -104,7 +106,7 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
             make.left.equalTo(self.mas_left);
             make.right.equalTo(self.mas_right);
             make.bottom.equalTo(self.mas_bottom);
-            make.height.equalTo(self.mas_width).with.multipliedBy(0.1);
+            make.height.mas_equalTo(40.0);
         }];
         
         _loadView = [[UIActivityIndicatorView alloc]init];
@@ -143,6 +145,7 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 }
 
 + (void)playWithUrl:(NSURL *)playUrl withHeaderInfos:(NSDictionary *)headerInfo{
+    [[BasePlayerView shareInstance] showBottomControl:NO];
     [[BasePlayerView shareInstance].loadView startAnimating];
     [BasePlayerView shareInstance].lastPlayStatus = NO;
     [BasePlayerView shareInstance].url = playUrl;
@@ -225,13 +228,21 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 #pragma mark- 播放器手势
 - (void)tapOnceGesture:(UITapGestureRecognizer *)gesture{
     NSLog(@"tap once");
+    [self showBottomControl:YES];
+    if (self.isPlaying) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
+        [self performSelector:@selector(hiddenBottomControWithAnimate) withObject:self afterDelay:5.0];
+    }
 }
 
 - (void)doubleTapGesture:(UITapGestureRecognizer *)gesture{
     if (self.isPlaying) {
-        [self.player pause];
+        [BasePlayerView pause];
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
+        [self showBottomControl:YES];
     }else{
-        [self.player play];
+        [BasePlayerView play];
+        [self performSelector:@selector(hiddenBottomControWithAnimate) withObject:self afterDelay:5.0];
     }
 }
 
@@ -339,6 +350,10 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
     if (!_isActivity) {
         [_player pause];
     }
+    if ([self isPlaying]) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
+         [self performSelector:@selector(hiddenBottomControWithAnimate) withObject:self afterDelay:5.0];
+    }
 }
 
 //播放状态更改
@@ -389,6 +404,7 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
     _isActivity = YES;
     if (_lastPlayStatus && !self.isPlaying) {
         [_player play];
+        [self performSelector:@selector(hiddenBottomControWithAnimate) withObject:self afterDelay:5.0];
     }
     [self refreshPlayTime];
 }
@@ -400,6 +416,8 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
     }
     _isActivity = NO;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshPlayTime) object:nil];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
+    [self showBottomControl:NO];
 }
 
 
@@ -443,6 +461,48 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor{
     [super setBackgroundColor:[UIColor blackColor]];
+}
+
+
+#pragma mark-
+#pragma mark- 显示及隐藏底部控制器
+- (void)showBottomControlWithAnimate{
+    [self showBottomControl:YES];
+}
+- (void)showBottomControl:(BOOL)animate{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showBottomControl:) object:self];
+    [_bottomControl mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.mas_left);
+        make.right.equalTo(self.mas_right);
+        make.bottom.equalTo(self.mas_bottom);
+        make.height.mas_equalTo(40.0);
+    }];
+    if (animate) {
+        [UIView animateWithDuration:0.2 animations:^{
+            [self layoutIfNeeded];
+        }];
+    }else{
+        [self layoutIfNeeded];
+    }
+}
+
+- (void)hiddenBottomControWithAnimate{
+    [self hiddenBottomControl:YES];
+}
+- (void)hiddenBottomControl:(BOOL)animate{
+    [_bottomControl mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.mas_bottom);
+        make.left.equalTo(self.mas_left);
+        make.right.equalTo(self.mas_right);
+        make.height.mas_equalTo(40.0);
+    }];
+    if (animate) {
+        [UIView animateWithDuration:0.2 animations:^{
+            [self layoutIfNeeded];
+        }];
+    }else{
+        [self layoutIfNeeded];
+    }
 }
 
 #pragma mark-
