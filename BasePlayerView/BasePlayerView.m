@@ -6,6 +6,13 @@
 //  Copyright © 2017年 xiaocan. All rights reserved.
 //
 
+//
+//
+//  playProgress、loadView、bottomControl 可删除掉自定义
+//
+//
+//
+
 #define B_D_WIDTH   [UIScreen mainScreen].bounds.size.width
 #define B_D_HEIGHT  [UIScreen mainScreen].bounds.size.height
 
@@ -33,8 +40,8 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 @property(nonatomic, assign, readwrite) BOOL isPlaying;
 @property(nonatomic, assign, readwrite) BOOL lastPlayStatus; /**< YES：play，NO：pause */
 
-@property(nonatomic, strong) UIProgressView *playProgress;
-@property(nonatomic, strong) UIActivityIndicatorView *loadView;
+@property(nonatomic, strong) UIProgressView *playProgress;      /**< 视频最底部进度条 */
+@property(nonatomic, strong) UIActivityIndicatorView *loadView; /**< 视频load状态提示 */
 
 @property(nonatomic, strong) PlayerBottomControl    *bottomControl;
 
