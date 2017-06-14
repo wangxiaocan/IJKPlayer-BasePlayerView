@@ -18,6 +18,6 @@
 	AVFoundation.framework
 	AudioToolbox.framework
 
-### use [ijkplayer](https://github.com/Bilibili/ijkplayer,"IJKPlayer")
+### use [ijkplayer](https://github.com/Bilibili/ijkplayer)
 
 ![image](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screen.PNG)
