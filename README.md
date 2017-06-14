@@ -1,7 +1,7 @@
 # IJKPlayer-BasePlayerView
 
-如果自己封装，可直接使用 IJKMediaFramework.framework（仅限真机使用）<br>
-所需静态库：<br>
+## 如果自己封装，可直接使用 IJKMediaFramework.framework（仅限真机使用）<br>
+### 所需静态库：<br>
   	libz.tbd<br>
 	libc++.tbd<br>
 	libbz2.tbd<br>
@@ -18,6 +18,6 @@
 	AVFoundation.framework<br>
 	AudioToolbox.framework<br>
 
-use ijkplayer
+### use ijkplayer
 
 ![image](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/blob/master/BasePlayerView/screen.PNG)
