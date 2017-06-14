@@ -235,10 +235,17 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 #pragma mark- 播放器手势
 - (void)tapOnceGesture:(UITapGestureRecognizer *)gesture{
     NSLog(@"tap once");
-    [self showBottomControl:YES];
-    if (self.isPlaying) {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
-        [self performSelector:@selector(hiddenBottomControWithAnimate) withObject:self afterDelay:5.0];
+    if (_bottomControl.frame.origin.y >= self.bounds.size.height) {
+        [self showBottomControl:YES];
+        if ([self isPlaying]) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
+            [self performSelector:@selector(hiddenBottomControWithAnimate) withObject:self afterDelay:5.0];
+        }
+    }else{
+        if ([self isPlaying]) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
+            [self hiddenBottomControl:YES];
+        }
     }
 }
 
