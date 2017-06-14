@@ -16,6 +16,7 @@
 @property(nonatomic, strong, readonly) id<IJKMediaPlayback> player;
 @property(nonatomic, assign, readonly) BOOL isPlaying;
 @property(nonatomic, assign, readonly) BOOL lastPlayStatus; /**< YES：play，NO：pause */
+@property(nonatomic, assign)           BOOL isShowBottomProgressView;/**< 底部进度条 */
 
 
 + (void)pause;

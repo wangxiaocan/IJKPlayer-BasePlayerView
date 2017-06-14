@@ -11,7 +11,18 @@
 
 #import "BasePlayerView.h"
 #import "PlayerBottomControl.h"
+#import <MediaPlayer/MediaPlayer.h>
 #import "Masonry.h"
+
+
+typedef NS_ENUM(NSInteger,TouhGestureType){
+    TouhGestureType_Brightness = 0, /**< 亮度调节 */
+    TouhGestureType_Volume,         /**< 音量调节 */
+    TouhGestureType_Fast,           /**< 快进 */
+    TouhGestureType_Rewind,         /**< 快退 */
+    ToucGestureType_Invalid,        /**< 无效 */
+    TouhGestureType_None,           /**< 未知 */
+};
 
 
 
@@ -27,6 +38,16 @@
 
 @property(nonatomic, strong) PlayerBottomControl    *bottomControl;
 
+//音量设置
+@property(nonatomic, strong) MPVolumeView           *volumeView;/**< 音量调节 */
+@property(nonatomic, strong) UISlider               *volumeSlider;
+
+
+//手势相关
+@property (nonatomic, assign) CGPoint           lastTouchPoint;
+@property (nonatomic, assign) TouhGestureType   touchType;  /**< 手势功能 */
+
+
 @end
 
 @implementation BasePlayerView
@@ -41,9 +62,24 @@
     return playerView;
 }
 
+- (UISlider *)volumeSlider{
+    if (!_volumeSlider) {
+        for (UIView *subView in _volumeView.subviews) {
+            if ([subView.class.description isEqualToString:@"MPVolumeSlider"]) {
+                self.volumeSlider = (UISlider *)subView;
+                break;
+            }
+        }
+    }
+    return _volumeSlider;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
+        
+        _touchType = TouhGestureType_None;
+        _lastTouchPoint = CGPointZero;
         
         _playProgress = [[UIProgressView alloc]init];
         _playProgress.progressTintColor = [UIColor redColor];
@@ -55,6 +91,7 @@
             make.height.mas_equalTo(2.0);
         }];
         _playProgress.progress = 0.f;
+        _playProgress.hidden = !_isShowBottomProgressView;
         
         _bottomControl = [[PlayerBottomControl alloc]init];
         [self addSubview:_bottomControl];
@@ -62,7 +99,7 @@
             make.left.equalTo(self.mas_left);
             make.right.equalTo(self.mas_right);
             make.bottom.equalTo(self.mas_bottom);
-            make.height.equalTo(self.mas_height).with.multipliedBy(0.2);
+            make.height.equalTo(self.mas_width).with.multipliedBy(0.1);
         }];
         
         _loadView = [[UIActivityIndicatorView alloc]init];
@@ -76,6 +113,9 @@
             make.bottom.equalTo(self.mas_bottom);
         }];
         
+        _volumeView = [[MPVolumeView alloc]initWithFrame:CGRectMake(10, 10, 100, 40)];
+        [self addSubview:_volumeView];
+        _volumeView.hidden = YES;
         
         [self refreshPlayTime];
         [self installMovieNotificationObservers];
@@ -83,12 +123,15 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         
         
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panGestured:)];
         UITapGestureRecognizer *tapOnce = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapOnceGesture:)];
         UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(doubleTapGesture:)];
         doubleTap.numberOfTapsRequired = 2;
         [self addGestureRecognizer:tapOnce];
         [self addGestureRecognizer:doubleTap];
+        [self addGestureRecognizer:panGesture];
         [tapOnce requireGestureRecognizerToFail:doubleTap];
+        [doubleTap requireGestureRecognizerToFail:panGesture];
         
     }
     return self;
@@ -184,6 +227,56 @@
         [self.player pause];
     }else{
         [self.player play];
+    }
+}
+
+- (void)panGestured:(UIPanGestureRecognizer *)gesture{
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:{
+            _lastTouchPoint = [gesture locationInView:self];
+        }
+            break;
+        case UIGestureRecognizerStateChanged:{
+            CGPoint currentPoint = [gesture locationInView:self];
+            CGFloat changeX = currentPoint.x - _lastTouchPoint.x;
+            CGFloat changeY = currentPoint.y - _lastTouchPoint.y;
+            if (_touchType == TouhGestureType_None) {
+                if (ABS(changeX) > ABS(changeY)) {//左右滑动
+                    _touchType = (changeX > 0)?(TouhGestureType_Fast):(TouhGestureType_Rewind);
+                }else{//上下滑动
+                    if (_lastTouchPoint.x <= self.bounds.size.width * 0.3) {
+                        _touchType = TouhGestureType_Brightness;
+                    }else if (_lastTouchPoint.x >= self.bounds.size.width * 0.7){
+                        _touchType = TouhGestureType_Volume;
+                    }else{
+                        _touchType = ToucGestureType_Invalid;
+                    }
+                }
+            }else{
+                CGPoint velocityPoint = [gesture velocityInView:self];
+                CGFloat velocityX = velocityPoint.x / self.bounds.size.width;
+                CGFloat velocityY = velocityPoint.y / self.bounds.size.height;
+
+                if (_touchType == TouhGestureType_Brightness) {//亮度
+                    CGFloat bright = [UIScreen mainScreen].brightness - velocityY / 20.0;
+                    [[UIScreen mainScreen] setBrightness:bright];
+                }else if (_touchType == TouhGestureType_Volume){//音量
+                    self.volumeSlider.value = self.volumeSlider.value - velocityY / 20.0;
+                }else if (_touchType == TouhGestureType_Fast){//快进
+                    
+                }else if (_touchType == TouhGestureType_Rewind){//快退
+                    
+                }
+                
+            }
+            _lastTouchPoint = currentPoint;
+        }
+            break;
+            
+        default:
+            _lastTouchPoint = CGPointZero;
+            _touchType = TouhGestureType_None;
+            break;
     }
 }
 
@@ -320,7 +413,7 @@
     [_bottomControl setPlayProgress:currentProgress];
     [_bottomControl setPlayStatus:self.isPlaying];
     [_bottomControl setCurrentPlayTime:_player.currentPlaybackTime andDuration:_player.duration];
-    NSLog(@"current play time:%f and total time:%f",_player.currentPlaybackTime,_player.duration);
+    //NSLog(@"current play time:%f and total time:%f",_player.currentPlaybackTime,_player.duration);
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshPlayTime) object:nil];
     [self performSelector:@selector(refreshPlayTime) withObject:nil afterDelay:0.5];
 }
@@ -331,6 +424,11 @@
 #pragma mark- 播放状态
 - (BOOL)isPlaying{
     return [_player isPlaying];
+}
+
+- (void)setIsShowBottomProgressView:(BOOL)isShowBottomProgressView{
+    _isShowBottomProgressView = isShowBottomProgressView;
+    _playProgress.hidden = !_isShowBottomProgressView;
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor{
