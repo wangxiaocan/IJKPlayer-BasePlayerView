@@ -47,6 +47,9 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 @property (nonatomic, assign) CGPoint           lastTouchPoint;
 @property (nonatomic, assign) TouhGestureType   touchType;  /**< 手势功能 */
 
+//前后台
+@property (nonatomic, assign) BOOL              isActivity;
+
 
 @end
 
@@ -77,6 +80,8 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
+        
+        _isActivity = YES;
         
         _touchType = TouhGestureType_None;
         _lastTouchPoint = CGPointZero;
@@ -331,6 +336,9 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 //初始化完成、即将播放
 - (void)mediaIsPreparedToPlayDidChange:(NSNotification*)notification{
     NSLog(@"mediaIsPreparedToPlayDidChange\n");
+    if (!_isActivity) {
+        [_player pause];
+    }
 }
 
 //播放状态更改
@@ -378,6 +386,7 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
 #pragma mark-
 #pragma mark- 应用进入前后台
 - (void)appWillEnterForeground:(NSNotification *)notifi{
+    _isActivity = YES;
     if (_lastPlayStatus && !self.isPlaying) {
         [_player play];
     }
@@ -389,6 +398,7 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
     if (_lastPlayStatus) {
         [_player pause];
     }
+    _isActivity = NO;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshPlayTime) object:nil];
 }
 
