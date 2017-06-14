@@ -1,22 +1,22 @@
 # IJKPlayer-BasePlayerView
 
-如果自己封装，可直接使用 IJKMediaFramework.framework（仅限真机使用）
-  所需静态库：
-  libz.tbd
-	libc++.tbd;
-	libbz2.tbd
-	IJKMediaFramework.framework;
-	VideoToolbox.framework
-	UIKit.framework
-	QuartzCore.framework
-	OpenGLES.framework
-	MobileCoreServices.framework
-	MediaPlayer.framework
-	CoreVideo.framework
-	CoreMedia.framework
-	CoreGraphics.framework
-	AVFoundation.framework
-	AudioToolbox.framework
+如果自己封装，可直接使用 IJKMediaFramework.framework（仅限真机使用）<br>
+所需静态库：<br>
+  	libz.tbd<br>
+	libc++.tbd<br>
+	libbz2.tbd<br>
+	IJKMediaFramework.framework;<br>
+	VideoToolbox.framework<br>
+	UIKit.framework<br>
+	QuartzCore.framework<br>
+	OpenGLES.framework<br>
+	MobileCoreServices.framework<br>
+	MediaPlayer.framework<br>
+	CoreVideo.framework<br>
+	CoreMedia.framework<br>
+	CoreGraphics.framework<br>
+	AVFoundation.framework<br>
+	AudioToolbox.framework<br>
 
 use ijkplayer
 
