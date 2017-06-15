@@ -14,13 +14,13 @@
 
 @property (nonatomic, strong) UIImageView   *playImage;
 @property (nonatomic, strong) UIButton      *playBtn;
-@property (nonatomic, strong) UISlider      *progressSliderView;
+@property (nonatomic, strong, readwrite) UISlider      *progressSliderView;
 @property (nonatomic, strong) UILabel       *curentPlayTime;
 @property (nonatomic, strong) UILabel       *videoDurationLabel;
 
 @property (nonatomic, assign) double currentPlayTime;
 @property (nonatomic, assign) double durationTime;
-@property (nonatomic, assign) BOOL   isDragingSlider;
+
 
 @end
 

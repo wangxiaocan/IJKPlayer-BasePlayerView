@@ -25,8 +25,7 @@
 typedef NS_ENUM(NSInteger,TouhGestureType){
     TouhGestureType_Brightness = 0, /**< 亮度调节 */
     TouhGestureType_Volume,         /**< 音量调节 */
-    TouhGestureType_Fast,           /**< 快进 */
-    TouhGestureType_Rewind,         /**< 快退 */
+    TouhGestureType_Fast_Rewind,    /**< 快进、快退 */
     ToucGestureType_Invalid,        /**< 无效 */
     TouhGestureType_None,           /**< 未知 */
 };
@@ -272,7 +271,10 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
             CGFloat changeY = currentPoint.y - _lastTouchPoint.y;
             if (_touchType == TouhGestureType_None) {
                 if (ABS(changeX) > ABS(changeY)) {//左右滑动
-                    _touchType = (changeX > 0)?(TouhGestureType_Fast):(TouhGestureType_Rewind);
+                    _touchType = TouhGestureType_Fast_Rewind;
+                    _bottomControl.isDragingSlider = YES;
+                    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
+                    [self showBottomControlWithAnimate];
                 }else{//上下滑动
                     if (_lastTouchPoint.x <= self.bounds.size.width * 0.3) {
                         _touchType = TouhGestureType_Brightness;
@@ -292,10 +294,9 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
                     [[UIScreen mainScreen] setBrightness:bright];
                 }else if (_touchType == TouhGestureType_Volume){//音量
                     self.volumeSlider.value = self.volumeSlider.value - velocityY / 20.0;
-                }else if (_touchType == TouhGestureType_Fast){//快进
-                    
-                }else if (_touchType == TouhGestureType_Rewind){//快退
-                    
+                }else if (_touchType == TouhGestureType_Fast_Rewind){//快进、快退
+                    _bottomControl.progressSliderView.value += velocityX / 40.0;
+                    [_bottomControl didSliderValueChanged];
                 }
                 
             }
@@ -304,6 +305,12 @@ typedef NS_ENUM(NSInteger,TouhGestureType){
             break;
             
         default:
+            if (_touchType == TouhGestureType_Fast_Rewind) {
+                _player.currentPlaybackTime = _bottomControl.progressSliderView.value * _player.duration;
+                _bottomControl.isDragingSlider = NO;
+                [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenBottomControWithAnimate) object:self];
+                [self performSelector:@selector(hiddenBottomControWithAnimate) withObject:self afterDelay:5.0];
+            }
             _lastTouchPoint = CGPointZero;
             _touchType = TouhGestureType_None;
             break;
