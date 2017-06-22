@@ -13,7 +13,9 @@
 @interface ViewController ()
 
 @property (nonatomic, strong) UIView *playerBgView;
-@property (nonatomic, strong) UIButton  *playBtn;
+
+@property (nonatomic, strong) UITextField       *urlInputView;
+@property (nonatomic, strong) UIButton          *playBtn;
 
 @end
 
@@ -43,6 +45,14 @@
     }];
     
     
+    _urlInputView = [[UITextField alloc]init];
+    _urlInputView.clearButtonMode = UITextFieldViewModeAlways;
+    _urlInputView.borderStyle = UITextBorderStyleRoundedRect;
+    _urlInputView.placeholder = @" 请输入播放链接";
+    _urlInputView.font = [UIFont systemFontOfSize:15.0];
+    [self.view addSubview:_urlInputView];
+    
+    
     _playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _playBtn.backgroundColor = [UIColor grayColor];
     _playBtn.clipsToBounds = YES;
@@ -50,29 +60,39 @@
     [_playBtn setTitle:@"Load Video" forState:UIControlStateNormal];
     [self.view addSubview:_playBtn];
     [_playBtn addTarget:self action:@selector(playBtnClicked) forControlEvents:UIControlEventTouchUpInside];
-    [_playBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.view.mas_centerX);
-        make.bottom.equalTo(self.view.mas_bottom).with.offset(-80.0);
-        make.width.mas_equalTo(120.0);
+    
+    
+    [_urlInputView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(_playerBgView.mas_bottom).with.offset(40.0);
+        make.left.equalTo(self.view.mas_left).with.offset(10.0);
+        make.right.equalTo(self.view.mas_right).with.offset(-10.0);
         make.height.mas_equalTo(34.0);
     }];
     
+    [_playBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.view.mas_centerX);
+        make.top.equalTo(_urlInputView.mas_bottom).with.offset(20.0);
+        make.width.mas_equalTo(120.0);
+        make.height.mas_equalTo(34.0);
+    }];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenStatusBarChanged:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
 }
 
 
 
 - (void)playBtnClicked{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSURL *playUrl = [NSURL URLWithString:@"http://cache.m.iqiyi.com/dc/dt/mobile/20170612/2b/2d/c940390b0d91166bba05c36f90650ecf.m3u8?qypid=697607900_22&qd_src=5be6a2fdfe4f4a1a8c7b08ee46a18887&qd_tm=1497332264000&qd_ip=183.230.177.170&qd_sc=89916a98d845c38aecf15721e861da3d&mbd=f0f6c3ee5709615310c0f053dc9c65f2_5.9_1"];
-        [BasePlayerView playWithUrl:playUrl withHeaderInfos:nil];
-    });
+    if (_urlInputView.text.length > 0) {
+        [BasePlayerView playWithUrl:[NSURL URLWithString:_urlInputView.text] withHeaderInfos:nil];
+    }
 }
 
 - (void)screenStatusBarChanged:(NSNotification *)notifi{
+    if ([_urlInputView isFirstResponder]) {
+        [_urlInputView resignFirstResponder];
+    }
     if ([UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationLandscapeLeft || [UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationLandscapeRight) {
         _playBtn.hidden = NO;
+        _urlInputView.hidden = NO;
         [_playerBgView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self.view.mas_left);
             make.top.equalTo(self.view.mas_top).with.offset(20.0);
@@ -81,6 +101,7 @@
         }];
     }else{
         _playBtn.hidden = YES;
+        _urlInputView.hidden = YES;
         [_playerBgView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self.view.mas_left);
             make.top.equalTo(self.view.mas_top);
@@ -88,6 +109,10 @@
             make.bottom.equalTo(self.view.mas_bottom);
         }];
     }
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_urlInputView resignFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning {
