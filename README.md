@@ -18,7 +18,7 @@
 	AVFoundation.framework
 	AudioToolbox.framework
 
-### use [ijkplayer](https://github.com/Bilibili/ijkplayer)
+### use [Bilibili ijkplayer](https://github.com/Bilibili/ijkplayer)
 
 ![全屏播放](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screent.PNG)
 ![竖屏播放](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screen.PNG)
