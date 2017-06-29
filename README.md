@@ -20,6 +20,6 @@
 
 ### use [ijkplayer](https://github.com/Bilibili/ijkplayer)
 
-![image_left](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screent.PNG)
-![image](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screen.PNG)
+![全屏播放](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screent.PNG)
+![竖屏播放](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screen.PNG)
 
