@@ -21,3 +21,4 @@
 ### use [ijkplayer](https://github.com/Bilibili/ijkplayer)
 
 ![image](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screen.PNG)
+![image_left](https://github.com/wangxiaocan/IJKPlayer-BasePlayerView/raw/master/BasePlayerView/screent.PNG)
